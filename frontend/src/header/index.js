@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Collapse,
+  Button,
   Navbar,
   NavbarToggler,
   NavbarBrand,
@@ -10,8 +11,7 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
-  NavbarText
+  DropdownItem
 } from "reactstrap";
 
 const Header = (props) => {
@@ -23,31 +23,47 @@ const Header = (props) => {
     <div>
       <Navbar color="light" light expand="md">
         <NavbarBrand href="/">Brigaid</NavbarBrand>
-        <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
-          <Nav className="mr-auto" navbar>
+          <Nav className={"ml-auto"} navbar>
             <NavItem>
               <NavLink href="/map/">Map</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink>Nonprofit</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink>Volunteer</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink>About Us</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink>Maria Data</NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="https://github.com/reactstrap/reactstrap">
                 GitHub
               </NavLink>
             </NavItem>
+          </Nav>
+        </Collapse>
+        <Nav className={"ml-auto"}>
+          <NavItem>
+            <Button color="primary">Donate</Button>
+          </NavItem>
+          <NavItem>
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>
-                Options
+                Language
               </DropdownToggle>
               <DropdownMenu right>
-                <DropdownItem>Option 1</DropdownItem>
-                <DropdownItem>Option 2</DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>Reset</DropdownItem>
+                <DropdownItem>Spanish</DropdownItem>
+                <DropdownItem>English</DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
-          </Nav>
-          <NavbarText>Simple Text</NavbarText>
-        </Collapse>
+          </NavItem>
+        </Nav>
+        <NavbarToggler onClick={toggle} />
       </Navbar>
     </div>
   );
