@@ -51,17 +51,16 @@ const Header = (props) => {
           <NavItem>
             <Button color="primary">Donate</Button>
           </NavItem>
-          <NavItem>
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
-                Language
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem>Spanish</DropdownItem>
-                <DropdownItem>English</DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-          </NavItem>
+
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret>
+              Language
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem>Spanish</DropdownItem>
+              <DropdownItem>English</DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
         </Nav>
         <NavbarToggler onClick={toggle} />
       </Navbar>
