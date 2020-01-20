@@ -16,7 +16,7 @@ function App() {
       <Header />
       <Switch>
         <Route exact path="/" component={MarketingPage} />
-        <Route exact path="/map" component={MapPage} />
+        <Route path="/map" component={MapPage} />
       </Switch>
       <Footer />
     </div>
