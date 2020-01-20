@@ -1,3 +1,4 @@
+// nested routing example https://stackblitz.com/edit/react-router-dom-4-nested-example?file=index.js
 import React, { useState } from "react";
 import {
   Collapse,
@@ -8,7 +9,7 @@ import {
   NavLink
 } from "reactstrap";
 
-const TopNav = ({ match }) => {
+const TopNav = ({ match, tabs, activeTab }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
@@ -19,20 +20,18 @@ const TopNav = ({ match }) => {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>
-            <NavItem>
-              <NavLink href={`${match.url}/needs`}>Needs</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href={`${match.url}/necessities`}>Necessities</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href={`${match.url}/resources`}>Resources</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href={`${match.url}/volunteer`}>
-                Volunteer Opportunities
-              </NavLink>
-            </NavItem>
+            {tabs.map((tab, idx) => {
+              return (
+                <NavItem key={idx}>
+                  <NavLink
+                    href={`${match.url}/${tab.route}`}
+                    active={activeTab === tab.route}
+                  >
+                    {tab.text}
+                  </NavLink>
+                </NavItem>
+              );
+            })}
           </Nav>
         </Collapse>
       </Navbar>
