@@ -1,13 +1,12 @@
 import uuid
 
+# from users.models import User
+from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.reverse import reverse
 
 from needs.models import Need
-
-# from users.models import User
-from django.contrib.auth.models import User
 
 
 class Match(TimeStampedModel):
