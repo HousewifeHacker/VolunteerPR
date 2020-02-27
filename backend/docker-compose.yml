@@ -1,0 +1,49 @@
+version: '3'
+
+volumes:
+  database:
+    external: false
+  
+  redis:
+    external: false
+
+services:
+  database:
+    image: postgres:11.5
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - "55443:5432"
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+    - "8888:8080"
+
+  redis:
+    image: redis:4.0.14-alpine
+    volumes:
+      - redis:/data
+
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: dev_start
+    entrypoint: /home/appuser/docker-entrypoint.sh
+    environment:
+      - DATABASE_URL=postgres://postgres:password@database:5432/postgres
+      - REDIS_URL=redis://redis:6379
+    env_file:
+      - .env
+    restart: on-failure
+    volumes:
+      - .:/home/appuser/src
+    ports:
+      - "8123:8123"
+    links:
+      - database:database
+      - redis:redis
