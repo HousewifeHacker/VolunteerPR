@@ -12,7 +12,7 @@ class Organization(TimeStampedModel):
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     title = models.CharField(max_length=300)
-    description = models.TextField(blank=True)
+    description = models.TextField()
     organizers = models.ManyToManyField(User, related_name="organizers")
 
     def __str__(self):

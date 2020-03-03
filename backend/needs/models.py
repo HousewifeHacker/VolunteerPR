@@ -35,6 +35,18 @@ class Need(TimeStampedModel):
     # TODO  isnt past due
     # TODO hasnt been filled
 
+    NEEDS = "ND"
+    NECESSITIES = "NC"
+    RESOURCES = "RS"
+    VOLUNTEER = "VO"
+    NEED_TYPE_CHOICES = [
+        (NEEDS, "Needs"),
+        (NECESSITIES, "Necessities"),
+        (RESOURCES, "Resources"),
+        (VOLUNTEER, "Volunteer Opportunities"),
+    ]
+    need_type = models.CharField(max_length=2, choices=NEED_TYPE_CHOICES, default=NEEDS)
+
     class Meta:
         indexes = [models.Index(fields=["organization", "due"])]
         ordering = ["-due"]

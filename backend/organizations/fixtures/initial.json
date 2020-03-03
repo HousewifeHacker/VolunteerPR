@@ -1,0 +1,16 @@
+[
+{
+    "model": "organizations.organization",
+    "pk": "ca3acde5-d66c-4078-8db5-6d1c6087385c",
+    "fields": {
+        "created": "2020-02-27T14:32:20.993Z",
+        "modified": "2020-02-27T14:32:20.993Z",
+        "title": "Diapers4Change",
+        "description": "we donate diapers and supplies for families with young children",
+        "organizers": [
+            1,
+            2
+        ]
+    }
+}
+]

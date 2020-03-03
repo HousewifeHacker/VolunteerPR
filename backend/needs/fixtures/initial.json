@@ -1,0 +1,19 @@
+[
+{
+    "model": "needs.need",
+    "pk": "a9a52ed0-1169-45ee-b036-47bef9c9205e",
+    "fields": {
+        "created": "2020-02-27T14:36:00.338Z",
+        "modified": "2020-02-27T14:36:00.338Z",
+        "organizer": 2,
+        "organization": "ca3acde5-d66c-4078-8db5-6d1c6087385c",
+        "due": "2020-02-27",
+        "lat": "18.149740",
+        "lng": "-65.827477",
+        "title": "diapers 4 guanica",
+        "description": "200 diapers fro earthquake victims",
+        "upper_limit": 10,
+        "lower_limit": 2
+    }
+}
+]
