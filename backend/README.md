@@ -1,31 +1,30 @@
 ## Backend Setup
-
-If you're on MacOS, you can install Pipenv easily with Homebrew:
-
-```
-brew install pipenv
-```
-
-Or, if you're using Ubuntu:
+Download [Docker Compose](https://docs.docker.com/compose/install/)
 
 ```
-sudo apt install pipenv
-```
-
-Then setup the project:
-
-```
-pipenv install
-pipenv install --dev
-python manage.py migrate
-python manage.py createsuperuser
+docker-compose build
+docker-compose up
 ```
 
 
-## Pipenv basics
-To run a command from bash like `python main.py`:
+Setup the project within the docker container:
 
 ```
-pipenv run python main.py
+docker-compose run web sh -c "python manage.py migrate"
+docker-compose run web sh -c "python manage.py createsuperuser"
 ```
+
+
+Visit [http://localhost:8123](http//localhost:8123) to view the API
+Visit [http://localhost:8888](http//localhost:8888) to access the [Adminer](https://www.adminer.org/) interface.
+
+Adminer credentials:
+```
+System: postgreSQL
+Server: db
+Username: postgres
+Password: password
+Database: web
+```
+
 

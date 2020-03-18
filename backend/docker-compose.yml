@@ -1,49 +1,42 @@
 version: '3'
 
-volumes:
-  database:
-    external: false
-  
-  redis:
-    external: false
-
 services:
-  database:
+  db:
     image: postgres:11.5
     environment:
       - POSTGRES_PASSWORD=password
-    volumes:
-      - database:/var/lib/postgresql/data
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=web
     ports:
-      - "55443:5432"
+      - "54343:5432"
+
+  redis:
+    image: "redis:alpine"
 
   adminer:
     image: adminer
     restart: always
     ports:
-    - "8888:8080"
-
-  redis:
-    image: redis:4.0.14-alpine
-    volumes:
-      - redis:/data
+      - "8888:8080"
 
   web:
     build: 
       context: .
-      dockerfile: Dockerfile
-    command: dev_start
-    entrypoint: /home/appuser/docker-entrypoint.sh
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8123"
     environment:
-      - DATABASE_URL=postgres://postgres:password@database:5432/postgres
+      - DATABASE_URL=postgres://postgres:password@db:5432/postgres
       - REDIS_URL=redis://redis:6379
-    env_file:
-      - .env
     restart: on-failure
     volumes:
       - .:/home/appuser/src
     ports:
       - "8123:8123"
+    depends_on:
+      - db
+      - redis
+      - adminer
     links:
-      - database:database
+      - db:db
       - redis:redis
+
