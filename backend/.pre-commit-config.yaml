@@ -7,7 +7,7 @@ repos:
         name: isort
         stages: [commit]
         language: system
-        entry: pipenv run isort
+        entry: cd backend && docker-compose run --rm web isort
         types: [python]
 
     -   id: black
@@ -15,14 +15,14 @@ repos:
         language_version: python3.7
         stages: [commit]
         language: system
-        entry: pipenv run black
+        entry: cd backend && docker-compose run --rm black
         types: [python]
 
     -   id: flake8
         name: flake8
         stages: [commit]
         language: system
-        entry: pipenv run flake8
+        entry: cd backend && docker-compose run --rm flake8
         types: [python]
         exclude: setup.py
 
