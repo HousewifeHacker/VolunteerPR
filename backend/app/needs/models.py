@@ -1,11 +1,21 @@
 import uuid
+from datetime import datetime
 
 # from users.models import User
 from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.reverse import reverse
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
+def validate_future_date(value):
+    today = datetime.now().date()
+    if value <= today:
+        raise ValidationError(
+            _('Date %(value) must be in the future.'),
+            params={'value': value},
+        )
 
 class Organization(TimeStampedModel):
     """ Has many needs """
@@ -20,30 +30,31 @@ class Organization(TimeStampedModel):
 
 
 class Need(TimeStampedModel):
-    """ Has many matches """
+    """ Has many matches. Has one organizer and one organization """
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     organizer = models.ForeignKey(
-        User, related_name="organizer", on_delete=models.CASCADE
+        User, related_name="organizer", blank=True, null=True, on_delete=models.SET_NULL
     )
     organization = models.ForeignKey(
         Organization, related_name="organization", on_delete=models.CASCADE
     )
-    due = models.DateField()
-    lat = models.DecimalField(max_digits=10, decimal_places=6)
-    lng = models.DecimalField(max_digits=10, decimal_places=6)
+    due = models.DateField(validators=[validate_future_date], blank=True, null=True)
+    lat = models.DecimalField(max_digits=10, decimal_places=6, blank=True, null=True)
+    lng = models.DecimalField(max_digits=10, decimal_places=6, blank=True, null=True)
 
     title = models.CharField(max_length=300)
     description = models.TextField(blank=True)
     upper_limit = models.PositiveSmallIntegerField(
-        verbose_name="Maximum allowed matches"
+        verbose_name="Maximum allowed matches",
+        blank=True,
+        null=True,
     )
     lower_limit = models.PositiveSmallIntegerField(
-        verbose_name="Minimum needed matches"
+        verbose_name="Minimum needed matches",
+        blank=True,
+        null=True,
     )
-
-    # TODO  isnt past due
-    # TODO hasnt been filled
 
     NEEDS = "ND"
     NECESSITIES = "NC"
