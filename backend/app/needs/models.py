@@ -21,9 +21,9 @@ class Organization(TimeStampedModel):
     """ Has many needs """
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    title = models.CharField(max_length=300)
+    title = models.CharField(max_length=300, unique=True)
     description = models.TextField()
-    organizers = models.ManyToManyField(User, related_name="organizers")
+    organizers = models.ManyToManyField(User, related_name="organizers", blank=True)
 
     def __str__(self):
         return self.title
@@ -82,12 +82,11 @@ class Match(TimeStampedModel):
     volunteer = models.ForeignKey(
         User, related_name="volunteer", on_delete=models.CASCADE
     )
-    due = models.DateField()
     # todo review after event
 
     class Meta:
         verbose_name_plural = "Matches"
-        indexes = [models.Index(fields=["volunteer", "due"])]
+        indexes = [models.Index(fields=["volunteer", ])]
 
     def __str__(self):
-        return "{}-{}".format(self.volunteer, self.need)
+        return "{}-{}".format(self.volunteer.username, self.need.title)

@@ -21,6 +21,13 @@ def create_organization(organizers, title="Diapers4Change"):
     org.save()
     return org
 
+def create_match(need, volunteer):
+    """Helper to create a match"""
+    return Match.objects.create(
+        need=need,
+        volunteer=volunteer
+    )
+
 
 class NeedsModelsTests(TestCase):
 
@@ -59,3 +66,24 @@ class NeedsModelsTests(TestCase):
         )
 
         self.assertEqual(str(need), "D4C-Bring diapers to Guanica")
+
+    def test_string_organization(self):
+        """Test string representation of an Organization"""
+        organizer = create_user(username="testOrganizer")
+        organization = create_organization(organizers=[organizer], title="D4C")
+
+        self.assertEqual(str(organization), "D4C")
+
+    def test_string_match(self):
+        """Test string representation of a Match"""
+        organizer = create_user(username="testOrganizer")
+        organization = create_organization(organizers=[organizer], title="D4C")
+        need = Need.objects.create(
+            organization=organization,
+            title="Bring diapers",
+            due=datetime.today().date() + timedelta(weeks=2),
+        )
+        volunteer = create_user(username="goodVolunteer")
+        match = create_match(need, volunteer)
+
+        self.assertEqual(str(match), "goodVolunteer-Bring diapers")
