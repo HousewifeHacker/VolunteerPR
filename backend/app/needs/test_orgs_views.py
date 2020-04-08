@@ -64,3 +64,38 @@ class PrivateOrgsApiTest(TestCase):
             title=payload['title']
         ).exists()
         self.assertFalse(exists)
+
+    def test_superuser_edit_put(self):
+        self.client.force_authenticate(self.superuser)
+        post_payload = {'title': 'testOrg', 'description': 'testing description'}
+        res = self.client.post(reverse('organization-list'), post_payload)
+        org = Organization.objects.filter(
+            title=post_payload['title']
+        )[0]
+
+        payload = {'title': 'new', 'description': 'doing good'}
+        res = self.client.put(
+            reverse('organization-detail', kwargs={'pk': str(org.id)}),
+            data=payload,
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        org.refresh_from_db()
+        self.assertEqual(org.title, "new")
+
+    def test_superuser_patch_organizers(self):
+        self.client.force_authenticate(self.superuser)
+        org = Organization.objects.create(
+            title='anOrg',
+            description='description',
+        )
+        payload = {'organizers': [self.user.pk]}
+        res = self.client.patch(
+            reverse('organization-detail', kwargs={'pk': str(org.id)}),
+            data=payload,
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        org.refresh_from_db()
+        organizers = org.organizers.all()
+        self.assertEqual(len(organizers), 1)
+        self.assertIn(self.user, organizers)
