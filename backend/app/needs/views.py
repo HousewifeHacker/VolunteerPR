@@ -29,9 +29,9 @@ class MatchViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Only return their matches"""
-        return self.request.user.matches.all()
+        return Match.objects.filter(volunteer=self.request.user).all()
 
-    def perform_create(self, serializers):
+    def perform_create(self, serializer):
         """Create a match for the user"""
         serializer.save(volunteer=self.request.user)
 
@@ -43,7 +43,7 @@ class NeedViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOrganizer|permissions.IsAdminUser]
     queryset = Need.objects.all()
 
-    def perform_create(self, serializers):
+    def perform_create(self, serializer):
         """Create a need for the organizer. Allowing many organizations for user"""
         serializer.save(organizer=self.request.user)
 

@@ -16,7 +16,8 @@ class MatchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Match
-        fields = "__all__"
+        fields = ('id', 'need')
+        read_only_Fields = ('id',)
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
