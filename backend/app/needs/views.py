@@ -1,15 +1,23 @@
 from rest_framework import viewsets, mixins, authentication, permissions
+from rest_framework.exceptions import PermissionDenied
 
 from .models import Need, Organization, Match
 from .serializers import NeedSerializer, MatchSerializer, OrganizationSerializer
 
 
 class IsOrganizer(permissions.BasePermission):
-    message = 'Only organizers can perform this action'
-    def has_object_permission(self, request, view, obj):
+    message = 'Only organizers and staff can perform this action'
+    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return obj.organization in request.user.organizations
+
+        if not bool(request.user and request.user.is_authenticated):
+            return False
+
+        if Organization.objects.get(pk=request.data['organization']).organizers.filter(id=request.user.id):
+            return True
+
+        return bool(request.user and request.user.is_staff)
 
 
 class IsAdminDestructiveOnly(permissions.BasePermission):
@@ -17,7 +25,7 @@ class IsAdminDestructiveOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_staff
+        return bool(request.user and request.user.is_staff)
 
 
 class MatchViewSet(viewsets.ModelViewSet):
@@ -40,7 +48,7 @@ class NeedViewSet(viewsets.ModelViewSet):
     """View all needs for a normal/volunteer user. Permit any organizers of organization for everything"""
     serializer_class = NeedSerializer
     authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [IsOrganizer|permissions.IsAdminUser]
+    permission_classes = [IsOrganizer]
     queryset = Need.objects.all()
 
     def perform_create(self, serializer):
