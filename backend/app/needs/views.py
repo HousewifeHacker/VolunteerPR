@@ -1,5 +1,4 @@
-from rest_framework import viewsets, mixins, authentication, permissions
-from rest_framework.exceptions import PermissionDenied
+from rest_framework import viewsets, permissions
 
 from .models import Need, Organization, Match
 from .serializers import NeedSerializer, MatchSerializer, OrganizationSerializer
@@ -31,7 +30,6 @@ class IsAdminDestructiveOnly(permissions.BasePermission):
 class MatchViewSet(viewsets.ModelViewSet):
     """View and edit matches for a user"""
     serializer_class = MatchSerializer
-    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = Match.objects.none() #none or all?
 
@@ -47,7 +45,6 @@ class MatchViewSet(viewsets.ModelViewSet):
 class NeedViewSet(viewsets.ModelViewSet):
     """View all needs for a normal/volunteer user. Permit any organizers of organization for everything"""
     serializer_class = NeedSerializer
-    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [IsOrganizer]
     queryset = Need.objects.all()
 
@@ -59,6 +56,5 @@ class NeedViewSet(viewsets.ModelViewSet):
 class OrganizationViewSet(viewsets.ModelViewSet):
     """View all organizations. Allow nonsafe for staff"""
     serializer_class = OrganizationSerializer
-    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [IsAdminDestructiveOnly]
     queryset = Organization.objects.all()

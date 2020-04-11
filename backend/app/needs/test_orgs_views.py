@@ -20,7 +20,7 @@ class PublicOrgsApiTest(TestCase):
         res = self.client.get(reverse('organization-list'))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data['count'], 1)
 
     def test_create_org_prevented(self):
         payload = {'title': 'testOrg', 'description': 'testing description'}
@@ -33,12 +33,10 @@ class PrivateOrgsApiTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.superuser = get_user_model().objects.create_superuser(
-            username='testsuper',
             email='test@test.com',
             password='testPass123'
         )
         self.user = get_user_model().objects.create_user(
-            username='testuser',
             email='test2@test.com',
             password='testPass123',
         )

@@ -7,9 +7,12 @@ from django.core.exceptions import ValidationError
 
 from .models import Need, Organization, Match
 
-def create_user(username="testUser", password="testPass1212"):
+def create_user(email="test@test.com", password="testPass1212"):
     """Helper function to create new user"""
-    return get_user_model().objects.create_user(username, password)
+    return get_user_model().objects.create_user(
+        email=email,
+        password=password,
+    )
 
 def create_organization(organizers, title="Diapers4Change"):
     """Helper to create an organization"""
@@ -33,7 +36,7 @@ class NeedsModelsTests(TestCase):
 
     def test_string_need(self):
         """Test string representation of a Need"""
-        organizer = create_user(username="testOrganizer")
+        organizer = create_user()
         organization = create_organization(organizers=[organizer], title="D4C")
         need = Need.objects.create(
             organization=organization,
@@ -44,7 +47,7 @@ class NeedsModelsTests(TestCase):
 
     def test_need_past_due_is_invalid(self):
         """Tests a due date that has passed raises error"""
-        organizer = create_user(username="testOrganizer")
+        organizer = create_user()
         organization = create_organization(organizers=[organizer], title="D4C")
 
         with self.assertRaises(ValidationError):
@@ -57,7 +60,7 @@ class NeedsModelsTests(TestCase):
 
     def test_need_due_is_valid(self):
         """Tests a due date that has passed raises error"""
-        organizer = create_user(username="testOrganizer")
+        organizer = create_user()
         organization = create_organization(organizers=[organizer], title="D4C")
         need = Need.objects.create(
             organization=organization,
@@ -69,21 +72,21 @@ class NeedsModelsTests(TestCase):
 
     def test_string_organization(self):
         """Test string representation of an Organization"""
-        organizer = create_user(username="testOrganizer")
+        organizer = create_user()
         organization = create_organization(organizers=[organizer], title="D4C")
 
         self.assertEqual(str(organization), "D4C")
 
     def test_string_match(self):
         """Test string representation of a Match"""
-        organizer = create_user(username="testOrganizer")
+        organizer = create_user()
         organization = create_organization(organizers=[organizer], title="D4C")
         need = Need.objects.create(
             organization=organization,
             title="Bring diapers",
             due=datetime.today().date() + timedelta(weeks=2),
         )
-        volunteer = create_user(username="goodVolunteer")
+        volunteer = create_user(email="test2@test.com")
         match = create_match(need, volunteer)
 
-        self.assertEqual(str(match), "goodVolunteer-Bring diapers")
+        self.assertEqual(str(match), "test2@test.com-Bring diapers")

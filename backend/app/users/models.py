@@ -29,17 +29,22 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault("is_superuser", True)
-        return self._create_user(email, password, **extra_fields)
+        user = self._create_user(email, password, **extra_fields)
+        user.is_staff = True
+        return user
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     """  has many matches """
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    name = models.CharField(blank=True, max_length=255)
+    name = models.CharField(max_length=255, blank=True)
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=django.utils.timezone.now)
+    # TODO phone number validation
+    phone_number = models.CharField(max_length=17, blank=True)
+    is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 

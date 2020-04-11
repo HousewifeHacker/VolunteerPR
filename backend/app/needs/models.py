@@ -1,8 +1,7 @@
 import uuid
 from datetime import datetime
 
-# from users.models import User
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from model_utils.models import TimeStampedModel
 from rest_framework.reverse import reverse
@@ -23,7 +22,7 @@ class Organization(TimeStampedModel):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     title = models.CharField(max_length=300, unique=True)
     description = models.TextField()
-    organizers = models.ManyToManyField(User, related_name="organizers", blank=True)
+    organizers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="organizers", blank=True)
 
     def __str__(self):
         return self.title
@@ -34,7 +33,7 @@ class Need(TimeStampedModel):
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     organizer = models.ForeignKey(
-        User, related_name="organizer", blank=True, null=True, on_delete=models.SET_NULL
+        settings.AUTH_USER_MODEL, related_name="organizer", blank=True, null=True, on_delete=models.SET_NULL
     )
     organization = models.ForeignKey(
         Organization, related_name="organization", on_delete=models.CASCADE
@@ -80,7 +79,7 @@ class Match(TimeStampedModel):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     need = models.ForeignKey(Need, related_name="need", on_delete=models.CASCADE)
     volunteer = models.ForeignKey(
-        User, related_name="volunteer", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL, related_name="volunteer", on_delete=models.CASCADE
     )
     # todo review after event
 
@@ -89,4 +88,4 @@ class Match(TimeStampedModel):
         indexes = [models.Index(fields=["volunteer", ])]
 
     def __str__(self):
-        return "{}-{}".format(self.volunteer.username, self.need.title)
+        return "{}-{}".format(self.volunteer.email, self.need.title)

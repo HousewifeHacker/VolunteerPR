@@ -17,16 +17,14 @@ def sample_org(title='anOrg', description='description', organizers=[]):
     org.save()
     return org
 
-def sample_user(username='testUser', email='test2@test.com', password='testPass123'):
+def sample_user(email='test2@test.com', password='testPass123'):
     return get_user_model().objects.create_user(
-        username=username,
         email=email,
         password=password,
     )
 
-def sample_superuser(username='testsuper', email='testsuper@test.com', password='testpass123'):
+def sample_superuser(email='testsuper@test.com', password='testpass123'):
     return get_user_model().objects.create_superuser(
-        username=username,
         email=email,
         password=password,
     )
@@ -49,7 +47,7 @@ class PublicNeedsApiTest(TestCase):
         res = self.client.get(reverse('need-list'))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
+        self.assertEqual(res.data['count'], 2)
 
     def test_create_need_prevented(self):
         payload = {'organization': self.org.pk, 'title':'save the world'}
@@ -61,9 +59,9 @@ class PublicNeedsApiTest(TestCase):
 class PrivateNeedsApiTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.superuser = sample_superuser('testSuper', 'testSuper@test.com')
-        self.user = sample_user('testVolunteer', 'testVolunteer@test.com')
-        self.user_organizer = sample_user('testOrganizer', 'testorganizer@test.com')
+        self.superuser = sample_superuser('testSuper@test.com')
+        self.user = sample_user('testVolunteer@test.com')
+        self.user_organizer = sample_user('testorganizer@test.com')
         self.org = sample_org(organizers=[self.user_organizer])
 
     def test_create_need_superuser_success(self):

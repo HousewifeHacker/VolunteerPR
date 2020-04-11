@@ -22,12 +22,10 @@ class PrivateMatchesApiTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user1 = get_user_model().objects.create_user(
-            username='test1',
             email='test@test.com',
             password='testPass123'
         )
         self.user2 = get_user_model().objects.create_user(
-            username='test2',
             email='test2@test.com',
             password='testPass123',
         )
@@ -64,4 +62,4 @@ class PrivateMatchesApiTest(TestCase):
         res = self.client.get(reverse('match-list'))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data['count'], 1)
