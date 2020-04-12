@@ -30,12 +30,16 @@ def sample_superuser(email='testsuper@test.com', password='testpass123'):
         password=password,
     )
 
-def sample_need(organization, title='Bring diapers', need_type=NEED_TYPE_CHOICES[0][0]):
-    Need.objects.create(
-        organization=organization,
-        title=title,
-        need_type=need_type,
-    )
+def sample_need(org, **params):
+     defaults = {
+         "title": "Bring Diapers",
+         "city": "San Juan",
+         "category": "Materials",
+         "need_type": NEED_TYPE_CHOICES[0][0],
+     }
+     defaults.update(params)
+
+     return Need.objects.create(organization=org, **defaults)
 
 
 class PublicNeedsApiTest(TestCase):
@@ -44,16 +48,16 @@ class PublicNeedsApiTest(TestCase):
         self.org = sample_org()
 
     def test_list_needs(self):
-        need = sample_need(self.org, 'do good', NEED_TYPE_CHOICES[0][0])
-        need = sample_need(self.org, 'volunteer', NEED_TYPE_CHOICES[1][0])
+        need = sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
+        need = sample_need(self.org, need_type=NEED_TYPE_CHOICES[1][0])
         res = self.client.get(reverse('need-list'))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['count'], 2)
 
     def test_filter_need_type(self):
-        need = sample_need(self.org, 'do good', NEED_TYPE_CHOICES[0][0])
-        need = sample_need(self.org, 'volunteer', NEED_TYPE_CHOICES[1][0])
+        need = sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
+        need = sample_need(self.org, need_type=NEED_TYPE_CHOICES[1][0])
         route = "{}?{}={}".format(
             reverse('need-list'),
             'type',
@@ -81,7 +85,12 @@ class PrivateNeedsApiTest(TestCase):
 
     def test_create_need_superuser_success(self):
         self.client.force_authenticate(self.superuser)
-        payload = {'organization': self.org.pk, 'title': 'save the world'}
+        payload = {
+            'organization': self.org.pk,
+            'title': 'save the world',
+            'city': 'San Juan',
+            'category': 'Materials',
+        }
         res = self.client.post(reverse('need-list'), payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -92,7 +101,12 @@ class PrivateNeedsApiTest(TestCase):
 
     def test_create_need_organizer_success(self):
         self.client.force_authenticate(self.user_organizer)
-        payload = {'organization': self.org.pk, 'title': 'save the world'}
+        payload = {
+            'organization': self.org.pk,
+            'title': 'save the world',
+            'city': 'San Juan',
+            'category': 'Materials',
+        }
         res = self.client.post(reverse('need-list'), payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -103,7 +117,12 @@ class PrivateNeedsApiTest(TestCase):
 
     def test_create_need_user_not_allowed(self):
         self.client.force_authenticate(self.user)
-        payload = {'organization': self.org.pk, 'title': 'save the world'}
+        payload = {
+            'organization': self.org.pk,
+            'title': 'save the world',
+            'city': 'San Juan',
+            'category': 'Materials',
+        }
         res = self.client.post(reverse('need-list'), payload)
 
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)

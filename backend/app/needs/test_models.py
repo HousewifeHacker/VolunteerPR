@@ -31,6 +31,17 @@ def create_match(need, volunteer):
         volunteer=volunteer
     )
 
+def create_need(org, **params):
+    """Helper to create a need"""
+    defaults = {
+        "title": "do good",
+        "city": "San Juan",
+        "category": "Materials",
+    }
+    defaults.update(params)
+
+    return Need.objects.create(organization=org, **defaults)
+
 
 class NeedsModelsTests(TestCase):
 
@@ -38,10 +49,7 @@ class NeedsModelsTests(TestCase):
         """Test string representation of a Need"""
         organizer = create_user()
         organization = create_organization(organizers=[organizer], title="D4C")
-        need = Need.objects.create(
-            organization=organization,
-            title="Bring diapers to Guanica",
-        )
+        need = create_need(org=organization, title="Bring diapers to Guanica")
 
         self.assertEqual(str(need), "D4C-Bring diapers to Guanica")
 
@@ -51,9 +59,8 @@ class NeedsModelsTests(TestCase):
         organization = create_organization(organizers=[organizer], title="D4C")
 
         with self.assertRaises(ValidationError):
-            need = Need.objects.create(
-                organization=organization,
-                title="Bring diapers to Guanica",
+            need = create_need(
+                org=organization,
                 due=datetime.today().date() - timedelta(weeks=2),
             )
             need.full_clean()
@@ -62,8 +69,8 @@ class NeedsModelsTests(TestCase):
         """Tests a due date that has passed raises error"""
         organizer = create_user()
         organization = create_organization(organizers=[organizer], title="D4C")
-        need = Need.objects.create(
-            organization=organization,
+        need = create_need(
+            org=organization,
             title="Bring diapers to Guanica",
             due=datetime.today().date() + timedelta(weeks=2),
         )
@@ -81,8 +88,8 @@ class NeedsModelsTests(TestCase):
         """Test string representation of a Match"""
         organizer = create_user()
         organization = create_organization(organizers=[organizer], title="D4C")
-        need = Need.objects.create(
-            organization=organization,
+        need = create_need(
+            org=organization,
             title="Bring diapers",
             due=datetime.today().date() + timedelta(weeks=2),
         )

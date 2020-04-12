@@ -40,6 +40,8 @@ class Need(TimeStampedModel):
     organization = models.ForeignKey(
         Organization, related_name="organization", on_delete=models.CASCADE
     )
+    category = models.CharField(max_length=80)
+    city = models.CharField(max_length=40)
     due = models.DateField(validators=[validate_future_date], blank=True, null=True)
     lat = models.DecimalField(max_digits=10, decimal_places=6, blank=True, null=True)
     lng = models.DecimalField(max_digits=10, decimal_places=6, blank=True, null=True)
