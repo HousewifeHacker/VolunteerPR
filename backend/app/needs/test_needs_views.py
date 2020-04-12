@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from .models import Organization, Need
+from .helpers import NEED_TYPE_CHOICES
 
 
 def sample_org(title='anOrg', description='description', organizers=[]):
@@ -29,10 +30,11 @@ def sample_superuser(email='testsuper@test.com', password='testpass123'):
         password=password,
     )
 
-def sample_need(organization, title='Bring diapers'):
+def sample_need(organization, title='Bring diapers', need_type=NEED_TYPE_CHOICES[0][0]):
     Need.objects.create(
         organization=organization,
         title=title,
+        need_type=need_type,
     )
 
 
@@ -42,12 +44,25 @@ class PublicNeedsApiTest(TestCase):
         self.org = sample_org()
 
     def test_list_needs(self):
-        need = sample_need(self.org, 'do good')
-        need = sample_need(self.org, 'volunteer')
+        need = sample_need(self.org, 'do good', NEED_TYPE_CHOICES[0][0])
+        need = sample_need(self.org, 'volunteer', NEED_TYPE_CHOICES[1][0])
         res = self.client.get(reverse('need-list'))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['count'], 2)
+
+    def test_filter_need_type(self):
+        need = sample_need(self.org, 'do good', NEED_TYPE_CHOICES[0][0])
+        need = sample_need(self.org, 'volunteer', NEED_TYPE_CHOICES[1][0])
+        route = "{}?{}={}".format(
+            reverse('need-list'),
+            'type',
+            NEED_TYPE_CHOICES[0][0]
+        )
+        res = self.client.get(route)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['count'], 1)
 
     def test_create_need_prevented(self):
         payload = {'organization': self.org.pk, 'title':'save the world'}

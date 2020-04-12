@@ -8,6 +8,8 @@ from rest_framework.reverse import reverse
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from .helpers import NEED_TYPE_CHOICES
+
 def validate_future_date(value):
     today = datetime.now().date()
     if value <= today:
@@ -55,17 +57,7 @@ class Need(TimeStampedModel):
         null=True,
     )
 
-    NEEDS = "ND"
-    NECESSITIES = "NC"
-    RESOURCES = "RS"
-    VOLUNTEER = "VO"
-    NEED_TYPE_CHOICES = [
-        (NEEDS, "Needs"),
-        (NECESSITIES, "Necessities"),
-        (RESOURCES, "Resources"),
-        (VOLUNTEER, "Volunteer Opportunities"),
-    ]
-    need_type = models.CharField(max_length=2, choices=NEED_TYPE_CHOICES, default=NEEDS)
+    need_type = models.CharField(max_length=20, choices=NEED_TYPE_CHOICES, default=NEED_TYPE_CHOICES[0][0])
 
     class Meta:
         indexes = [models.Index(fields=["organization", "due"])]

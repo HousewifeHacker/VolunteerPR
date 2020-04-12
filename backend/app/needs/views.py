@@ -48,6 +48,13 @@ class NeedViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOrganizer]
     queryset = Need.objects.all()
 
+    def get_queryset(self):
+        queryset = Need.objects.all()
+        type = self.request.query_params.get('type', None)
+        if type is not None:
+            queryset = queryset.filter(need_type=type)
+        return queryset
+
     def perform_create(self, serializer):
         """Create a need for the organizer. Allowing many organizations for user"""
         serializer.save(organizer=self.request.user)
