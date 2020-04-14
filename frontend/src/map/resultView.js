@@ -1,40 +1,40 @@
-import React, { useEffect } from "react";
-import { Container, Row, Col } from "reactstrap";
+import { listNeeds } from "../api/needs.js";
+
+import React, { useEffect, useState } from "react";
+import { Container, Row, Col, Spinner } from "reactstrap";
 
 import ResultList from "./resultList";
 
 export default function ResultView({ match, setActiveTab }) {
+  const [results, setResults] = useState([]);
+  const [hasFetched, setHasFetched] = useState(false);
   useEffect(() => {
     setActiveTab(match.params.section);
   }, [match.params.section, setActiveTab]);
-
-  const results = [
-    {
-      category: "Material",
-      title: "Food and Drinks",
-      city: "San Juan",
-      coordinates: {
-        lat: 18.4529144,
-        lng: -66.0582606
-      }
-    },
-    {
-      category: "First Aid",
-      title: "National Hospital",
-      city: "San Juan",
-      coordinates: {
-        lat: 18.4529144,
-        lng: -66.0582606
-      }
-    }
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await listNeeds(match.params.section);
+      console.log(result);
+      setResults(result["results"] || []);
+      setHasFetched(true);
+    };
+    fetchData();
+  }, [match.params.section]);
 
   return (
     <Container>
       <h3>Section: {match.params.section}</h3>
       <Row>
         <Col>
-          <ResultList results={results} />
+          {hasFetched ? (
+            results.length ? (
+              <ResultList results={results} />
+            ) : (
+              <h3>No Data Found</h3>
+            )
+          ) : (
+            <Spinner color={"secondary"} />
+          )}
         </Col>
         <Col>Map</Col>
       </Row>

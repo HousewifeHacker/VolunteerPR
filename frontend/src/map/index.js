@@ -7,19 +7,19 @@ import ResultView from "./resultView";
 const TABS = [
   {
     text: "Needs",
-    route: "needs"
+    route: "NEEDS"
   },
   {
     text: "Necessities",
-    route: "necessities"
+    route: "NECESSITIES"
   },
   {
     text: "Resources",
-    route: "resources"
+    route: "RESOURCES"
   },
   {
     text: "Volunteer Opportunities",
-    route: "volunteer"
+    route: "VOLUNTEER"
   }
 ];
 
