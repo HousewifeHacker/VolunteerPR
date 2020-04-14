@@ -1,25 +1,25 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.utils.translation import gettext as _
 
 from .models import User
 
 
-class CustomUserCreationForm(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ("email",)
-
-
-class CustomUserChangeForm(UserChangeForm):
-    class Meta:
-        model = User
-        fields = ("email",)
-
-
-class UserAdmin(UserAdmin):
-    add_form = UserCreationForm
-    form = UserChangeForm
+class UserAdmin(BaseUserAdmin):
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+            (_('Personal Info'), {'fields': ('name',)}),
+            (_('Permissions'), {
+                'fields': ('is_active', 'is_staff', 'is_superuser')
+            }),
+        (_('Important dates'), {'fields': ('last_login',)}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2')
+        }),
+    )
     model = User
     list_display = ["email", "name"]
     list_filter = ("email",)

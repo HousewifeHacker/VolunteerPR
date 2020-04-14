@@ -10,8 +10,8 @@ docker-compose up
 Setup the project within the docker container:
 
 ```
-docker-compose run web sh -c "python manage.py migrate"
-docker-compose run web sh -c "python manage.py createsuperuser"
+docker-compose run web sh -c "python src/manage.py migrate"
+docker-compose run web sh -c "python src/manage.py createsuperuser"
 ```
 
 
@@ -24,7 +24,7 @@ System: postgreSQL
 Server: db
 Username: postgres
 Password: password
-Database: web
+Database: app
 ```
 
 
