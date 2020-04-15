@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 
 from .models import Need, Organization, Match
-from .serializers import NeedSerializer, MatchSerializer, OrganizationSerializer
+from .serializers import NeedSerializer, MatchSerializer, OrganizationSerializer, NeedSafeSerializer
 
 
 class IsOrganizer(permissions.BasePermission):
@@ -47,6 +47,11 @@ class NeedViewSet(viewsets.ModelViewSet):
     serializer_class = NeedSerializer
     permission_classes = [IsOrganizer]
     queryset = Need.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return NeedSafeSerializer
+        return NeedSerializer
 
     def get_queryset(self):
         queryset = Need.objects.all()
