@@ -5,6 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // pages
 import MapPage from "./map";
 import MarketingPage from "./marketing";
+import SignInHelpPage from "./signInHelp";
+import AccountSettingsPage from "./accountSettings";
 
 // layout
 import Header from "./header";
@@ -17,6 +19,8 @@ function App() {
       <Switch>
         <Route exact path="/" component={MarketingPage} />
         <Route path="/map" component={MapPage} />
+        <Route path="/map" component={SignInHelpPage} />
+        <Route path="/map" component={AccountSettingsPage} />
       </Switch>
       <Footer />
     </div>

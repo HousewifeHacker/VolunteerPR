@@ -14,6 +14,8 @@ import {
   DropdownItem
 } from "reactstrap";
 
+import AuthButtons from "./authButtons";
+
 const Header = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -61,6 +63,7 @@ const Header = (props) => {
               <DropdownItem>English</DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
+          <AuthButtons />
         </Nav>
         <NavbarToggler onClick={toggle} />
       </Navbar>

@@ -29,8 +29,7 @@ const user = (state = initialState, action) => {
         email: action.email,
         token: action.token,
         isFetching: false,
-        hasFetched: true,
-        hasActivationWarning: false
+        hasFetched: true
       });
     case SIGN_IN_FAILURE:
       return Object.assign({}, state, {
@@ -46,8 +45,7 @@ const user = (state = initialState, action) => {
     case SIGN_UP_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
-        hasFetched: true,
-        hasActivationWarning: true
+        hasFetched: true
       });
     case SIGN_UP_FAILURE:
       return Object.assign({}, state, {
