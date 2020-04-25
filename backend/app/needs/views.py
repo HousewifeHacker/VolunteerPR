@@ -56,8 +56,11 @@ class NeedViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Need.objects.all()
         type = self.request.query_params.get('type', None)
+        org = self.request.query_params.get('org', None)
         if type is not None:
             queryset = queryset.filter(need_type=type)
+        if org is not None:
+            queryset = queryset.filter(organization__id=org)
         return queryset
 
     def perform_create(self, serializer):

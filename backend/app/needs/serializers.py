@@ -26,7 +26,7 @@ class OrganizationDisplaySerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = ("id", "title")
-        read_only_fields = ("title",)
+        read_only_fields = ("id", "title")
 
 
 class NeedSerializer(serializers.ModelSerializer):

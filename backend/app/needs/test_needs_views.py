@@ -48,16 +48,16 @@ class PublicNeedsApiTest(TestCase):
         self.org = sample_org()
 
     def test_list_needs(self):
-        need = sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
-        need = sample_need(self.org, need_type=NEED_TYPE_CHOICES[1][0])
+        sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
+        sample_need(self.org, need_type=NEED_TYPE_CHOICES[1][0])
         res = self.client.get(reverse('need-list'))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['count'], 2)
 
     def test_filter_need_type(self):
-        need = sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
-        need = sample_need(self.org, need_type=NEED_TYPE_CHOICES[1][0])
+        sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
+        sample_need(self.org, need_type=NEED_TYPE_CHOICES[1][0])
         route = "{}?{}={}".format(
             reverse('need-list'),
             'type',
@@ -65,6 +65,24 @@ class PublicNeedsApiTest(TestCase):
         )
         res = self.client.get(route)
 
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['count'], 1)
+
+    def test_filter_need_org(self):
+        sample_need(self.org)
+        def get_route(orgId):
+            return "{}?{}={}".format(
+                reverse('need-list'),
+                'org',
+                orgId
+            )
+
+        invalid = "241a34f9-0d29-42f3-aa3e-e90234b9a1fd"
+        res = self.client.get(get_route(invalid))
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['count'], 0)
+
+        res = self.client.get(get_route(self.org.id))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['count'], 1)
 
