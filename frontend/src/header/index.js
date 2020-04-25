@@ -31,7 +31,7 @@ const Header = (props) => {
               <NavLink href="/map">Map</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink>Nonprofit</NavLink>
+              <NavLink href={"/nonprofits"}>Nonprofit</NavLink>
             </NavItem>
             <NavItem>
               <NavLink>Volunteer</NavLink>

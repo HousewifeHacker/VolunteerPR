@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardBody, CardTitle, CardText } from "reactstrap";
 
 export default function ResultView({ results }) {
@@ -19,6 +20,13 @@ export default function ResultView({ results }) {
                 </CardTitle>
                 <CardText tag={"h5"}>
                   <span className={"font-weight-bold"}>{result.title}</span>
+                  <br />
+                  <Link
+                    to={`/nonprofits/${result.organization.id}`}
+                    className={"text-muted"}
+                  >
+                    with {result.organization.title}
+                  </Link>
                   <br />
                   <span className={"text-muted"}>{result.city}</span>
                 </CardText>
