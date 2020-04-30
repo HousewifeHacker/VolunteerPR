@@ -4,7 +4,7 @@ import { Button, Modal } from "reactstrap";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
-import Login from "./login";
+import Login from "../loginModal";
 import LoggedInDropdown from "./loggedInDropDown";
 import { signOut } from "../redux/actions/user";
 

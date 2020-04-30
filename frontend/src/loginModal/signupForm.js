@@ -15,8 +15,8 @@ import {
   Spinner
 } from "reactstrap";
 
-import useForm from "../../utils/useForm";
-import { signUpAttempt } from "../../redux/actions";
+import useForm from "../utils/useForm";
+import { signUpAttempt } from "../redux/actions";
 
 const validate = (values) => {
   let errors = {};

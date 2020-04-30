@@ -13,8 +13,8 @@ import {
   Spinner
 } from "reactstrap";
 
-import useForm from "../../utils/useForm";
-import { signInAttempt } from "../../redux/actions/user";
+import useForm from "../utils/useForm";
+import { signInAttempt } from "../redux/actions/user";
 import { Link } from "react-router-dom";
 
 const validate = (values) => {
