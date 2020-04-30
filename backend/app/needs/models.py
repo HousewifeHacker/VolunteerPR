@@ -24,7 +24,7 @@ class Organization(TimeStampedModel):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     title = models.CharField(max_length=300, unique=True)
     description = models.TextField()
-    organizers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="organizers", blank=True)
+    organizers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="organizations", blank=True)
 
     def __str__(self):
         return self.title
@@ -35,10 +35,13 @@ class Need(TimeStampedModel):
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     organizer = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name="organizer", blank=True, null=True, on_delete=models.SET_NULL
+        settings.AUTH_USER_MODEL, related_name="needs", blank=True, null=True, on_delete=models.SET_NULL
     )
     organization = models.ForeignKey(
-        Organization, related_name="organization", on_delete=models.CASCADE
+        Organization, related_name="needs", on_delete=models.CASCADE
+    )
+    volunteers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, through='Match', blank=True
     )
     category = models.CharField(max_length=80)
     city = models.CharField(max_length=40)
@@ -71,9 +74,9 @@ class Need(TimeStampedModel):
 
 class Match(TimeStampedModel):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    need = models.ForeignKey(Need, related_name="need", on_delete=models.CASCADE)
+    need = models.ForeignKey(Need, related_name="matches", on_delete=models.CASCADE)
     volunteer = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name="volunteer", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL, related_name="matches", on_delete=models.CASCADE
     )
     # todo review after event
 
