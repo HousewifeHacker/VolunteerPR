@@ -1,7 +1,7 @@
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
 
-export const getRequest = (url, token) => {
+export const makeRequest = (url, token, method = "GET", body) => {
   let defaultHeaders = {
     Accept: "application/json",
     "Content-Type": "application/json"
@@ -9,10 +9,14 @@ export const getRequest = (url, token) => {
   if (token) {
     defaultHeaders["Authorization"] = `token ${token}`;
   }
-  return fetch(url, {
-    method: "GET",
+  let options = {
+    method: method,
     headers: defaultHeaders
-  })
+  };
+  if (method !== "GET") {
+    options["body"] = JSON.stringify(body);
+  }
+  return fetch(url, options)
     .then((resp) => resp.json())
     .then((data) => Object.assign({}, data, { success: true }))
     .catch((error) => Object.assign({}, error, { success: false }));
