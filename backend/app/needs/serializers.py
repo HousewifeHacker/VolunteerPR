@@ -34,14 +34,20 @@ class NeedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Need
-        fields = "__all__"
-        read_only_fields = ('volunteers',)
+        exclude = ('volunteers',)
 
 
 class NeedSafeSerializer(serializers.ModelSerializer):
     """Serializer for GET Need Model"""
     organization = OrganizationDisplaySerializer(many=False)
+    has_registered = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Need
-        fields = "__all__"
+        exclude = ('volunteers',)
+
+    def get_has_registered(self, need):
+        if not self.context["request"].user:
+            return False
+        return need.volunteers.filter(id=self.context["request"].user.id).exists()
