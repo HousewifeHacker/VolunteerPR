@@ -5,7 +5,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from .models import Organization, Need
+from .models import Organization, Need, Match
 from .helpers import NEED_TYPE_CHOICES
 
 
@@ -54,6 +54,13 @@ class PublicNeedsApiTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['count'], 2)
+
+    def test_list_need_anon_as_not_registered(self):
+        sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
+        res = self.client.get(reverse('need-list'))
+
+        need_json = res.data['results'][0]
+        self.assertEqual(need_json['has_registered'], False)
 
     def test_filter_need_type(self):
         sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
@@ -148,3 +155,23 @@ class PrivateNeedsApiTest(TestCase):
             title=payload['title']
         ).exists()
         self.assertFalse(exists)
+
+    def test_list_need_not_registered(self):
+        self.client.force_authenticate(self.user)
+        sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
+        res = self.client.get(reverse('need-list'))
+
+        need_json = res.data['results'][0]
+        self.assertEqual(need_json['has_registered'], False)
+
+    def test_list_need_registered(self):
+        self.client.force_authenticate(self.user)
+        need = sample_need(self.org, need_type=NEED_TYPE_CHOICES[0][0])
+        match = Match.objects.create(
+            need=need,
+            volunteer=self.user
+        )
+        res = self.client.get(reverse('need-list'))
+
+        need_json = res.data['results'][0]
+        self.assertEqual(need_json['has_registered'], True)
